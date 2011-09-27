@@ -28,7 +28,7 @@ Node *node_new(NodeType t, Node *left, Node *right) {
 Node *node_num_new(double v) {
   Node *p;
   p = node_alloc();
-  p->type = OP_NUM;
+  p->type = N_LNUMBER;
   p->val  = v;
   p->left  = NULL;
   p->right = NULL;
@@ -56,23 +56,26 @@ double eval_tree(Node *p) {
 
   t = p->type;
   switch(t){
-  case OP_NUM:
-    ret =  p->val;
-    break;
-  case OP_ADD:
+  case N_EXIT:
     ret = eval_tree(p->left) + eval_tree(p->right);
     break;
-  case OP_SUB:
-    ret = eval_tree(p->left) - eval_tree(p->right);
+  case N_IF:
+    ret = eval_tree(p->left) + eval_tree(p->right);
     break;
-  case OP_MUL:
-    ret = eval_tree(p->left) * eval_tree(p->right);
+  case N_LNUMBER:
+    ret = eval_tree(p->left) + eval_tree(p->right);
     break;
-  case OP_DIV:
-    ret = eval_tree(p->left) / eval_tree(p->right);
+  case N_DNUMBER:
+    ret = eval_tree(p->left) + eval_tree(p->right);
     break;
-  case OP_NEG:
-    ret = eval_tree(p->left) * -1;
+  case N_STRING:
+    ret = eval_tree(p->left) + eval_tree(p->right);
+    break;
+  case N_STRING_VARNAME:
+    ret = eval_tree(p->left) + eval_tree(p->right);
+    break;
+  case N_VARIABLE:
+    ret =  p->val;
     break;
   }
   return ret;

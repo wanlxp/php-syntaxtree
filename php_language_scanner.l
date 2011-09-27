@@ -30,6 +30,45 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 %%
+<INITIAL>"<script"{WHITESPACE}+"language"{WHITESPACE}*"="{WHITESPACE}*("php"|"\"php\""|"'php'"){WHITESPACE}*">" {
+	BEGIN(ST_IN_SCRIPTING);
+	return T_OPEN_TAG;
+}
+
+
+<INITIAL>"<%=" {
+		BEGIN(ST_IN_SCRIPTING);
+		return T_OPEN_TAG_WITH_ECHO;
+}
+
+
+<INITIAL>"<?=" {
+		BEGIN(ST_IN_SCRIPTING);
+		return T_OPEN_TAG_WITH_ECHO;
+}
+
+
+<INITIAL>"<%" {
+		BEGIN(ST_IN_SCRIPTING);
+		return T_OPEN_TAG;
+}
+
+
+<INITIAL>"<?php"([ \t]|{NEWLINE}) {
+	BEGIN(ST_IN_SCRIPTING);
+	return T_OPEN_TAG;
+}
+
+
+<INITIAL>"<?" {
+		BEGIN(ST_IN_SCRIPTING);
+		return T_OPEN_TAG;
+}
+
+<INITIAL>{ANY_CHAR} {
+}
+
+
 <ST_IN_SCRIPTING>"exit" {
 	return T_EXIT;
 }
@@ -510,44 +549,6 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	return T_NS_C;
 }
 
-<INITIAL>"<script"{WHITESPACE}+"language"{WHITESPACE}*"="{WHITESPACE}*("php"|"\"php\""|"'php'"){WHITESPACE}*">" {
-	BEGIN(ST_IN_SCRIPTING);
-	return T_OPEN_TAG;
-}
-
-
-<INITIAL>"<%=" {
-		BEGIN(ST_IN_SCRIPTING);
-		return T_OPEN_TAG_WITH_ECHO;
-}
-
-
-<INITIAL>"<?=" {
-		BEGIN(ST_IN_SCRIPTING);
-		return T_OPEN_TAG_WITH_ECHO;
-}
-
-
-<INITIAL>"<%" {
-		BEGIN(ST_IN_SCRIPTING);
-		return T_OPEN_TAG;
-}
-
-
-<INITIAL>"<?php"([ \t]|{NEWLINE}) {
-	BEGIN(ST_IN_SCRIPTING);
-	return T_OPEN_TAG;
-}
-
-
-<INITIAL>"<?" {
-		BEGIN(ST_IN_SCRIPTING);
-		return T_OPEN_TAG;
-}
-
-<INITIAL>{ANY_CHAR} {
-}
-
 
 <ST_DOUBLE_QUOTES,ST_HEREDOC,ST_BACKQUOTE>"$"{LABEL}"->"[a-zA-Z_\x7f-\xff] {
 	return T_VARIABLE;
@@ -659,10 +660,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 
-<ST_IN_SCRIPTING>{ANY_CHAR} {
-}
-
-<ST_VAR_OFFSET>{ANY_CHAR} {
+<ST_IN_SCRIPTING,ST_VAR_OFFSET>{ANY_CHAR} {
 }
 
 . {}
