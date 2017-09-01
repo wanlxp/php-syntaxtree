@@ -591,6 +591,19 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	} else {
 		doc_com = 0;
 	}
+	int c1 = 0, c2 = input();
+	for (;;) {
+		if (c2 == EOF) {
+			printf("Unterminated comment\n");
+			break;
+		}
+		if (c1 == '*' && c2 == '/') {
+			break;
+		}
+		c1 = c2;
+		c2 = input();
+	}
+
 	if (doc_com) {
 		return T_DOC_COMMENT;
 	}
