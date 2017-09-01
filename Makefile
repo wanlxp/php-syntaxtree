@@ -8,7 +8,7 @@ FLEX_SRC  = php_language_scanner.l
 FLEX_C    = lex.yy.c
 FLEX_O    = lex.yy.o
 C_FILES   = $(BISON_C) $(FLEX_C) php_node.c main.c
-OBJ       = $(FLEX_O) $(BISON_O) php_node.o main.o
+OBJ       = $(FLEX_O) $(BISON_O) php_node.o main.o php_compiler.o
 
 all : $(TARGET)
 
@@ -16,10 +16,10 @@ $(TARGET) : $(OBJ)
 	gcc -o $@ $(OBJ)
 
 $(FLEX_C) : $(FLEX_SRC) $(BISON_H)
-	flex $(FLEX_SRC)
+	flex -d $(FLEX_SRC)
 
 $(BISON_OUT) : $(BISON_SRC)
-	bison -dv $(BISON_SRC)
+	bison -dv -p php $(BISON_SRC)
 
 .c.o :
 	gcc -c $<
@@ -37,3 +37,4 @@ lex.yy.o: lex.yy.c php_language_parser.tab.h
 php_language_parser.tab.o: php_language_parser.tab.c php_language_parser.tab.h php_node.h
 php_node.o: php_node.c php_node.h
 main.o: main.c php_node.h
+php_compiler.o: php_compiler.c
