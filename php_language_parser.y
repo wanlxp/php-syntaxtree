@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "php_node.h"
 
+#define YYERROR_VERBOSE 1
 %}
 
 

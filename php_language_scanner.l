@@ -623,6 +623,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_IN_SCRIPTING>b?['] {
+  return T_CONSTANT_ENCAPSED_STRING;
 }
 
 
